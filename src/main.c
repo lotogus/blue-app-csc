@@ -1,5 +1,5 @@
 /*******************************************************************************
-*   Ripple Wallet
+*   Casinocoin Wallet
 *   (c) 2017 Ledger
 *
 *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,8 @@
 #include "os.h"
 #include "cx.h"
 #include <stdbool.h>
-#include "xrpParse.h"
-#include "xrpHelpers.h"
+#include "cscParse.h"
+#include "cscHelpers.h"
 
 #include "os_io_seproxyhal.h"
 #include "string.h"
@@ -217,7 +217,7 @@ const bagl_element_t ui_idle_blue[] = {
 
     // BADGE_RIPPLE.GIF
     {{BAGL_ICON, 0x00, 135, 178, 50, 50, 0, 0, BAGL_FILL, 0, COLOR_BG_1, 0, 0},
-     &C_badge_ripple,
+     &C_badge_casinocoin,
      0,
      0,
      0,
@@ -228,7 +228,7 @@ const bagl_element_t ui_idle_blue[] = {
     {{BAGL_LABELINE, 0x00, 0, 270, 320, 30, 0, 0, BAGL_FILL, 0x000000,
       COLOR_BG_1,
       BAGL_FONT_OPEN_SANS_LIGHT_16_22PX | BAGL_FONT_ALIGNMENT_CENTER, 0},
-     "Open Ripple wallet",
+     "Open Casinocoin wallet",
      0,
      0,
      0,
@@ -313,7 +313,7 @@ const ux_menu_entry_t menu_about[] = {
     UX_MENU_END};
 
 const ux_menu_entry_t menu_main[] = {
-    {NULL, NULL, 0, &C_icon_ripple, "Use wallet to", "view accounts", 33, 12},
+    {NULL, NULL, 0, &C_icon_casinocoin, "Use wallet to", "view accounts", 33, 12},
     {menu_settings, NULL, 0, NULL, "Settings", NULL, 0, 0},
     {menu_about, NULL, 0, NULL, "About", NULL, 0, 0},
     {NULL, os_sched_exit, 0, &C_icon_dashboard, "Quit app", NULL, 50, 29},
@@ -1941,7 +1941,7 @@ uint32_t set_result_get_publicKey() {
     uint32_t tx = 0;
     uint32_t addressLength = strlen(tmpCtx.publicKeyContext.address);
     G_io_apdu_buffer[tx++] = 33;
-    xrp_compress_public_key(&tmpCtx.publicKeyContext.publicKey,
+    csc_compress_public_key(&tmpCtx.publicKeyContext.publicKey,
                             G_io_apdu_buffer + tx, 33);
     tx += 33;
     G_io_apdu_buffer[tx++] = addressLength;
@@ -2003,9 +2003,9 @@ void handleGetPublicKey(uint8_t p1, uint8_t p2, uint8_t *dataBuffer,
                           &privateKey, 1);
     os_memset(&privateKey, 0, sizeof(privateKey));
     os_memset(privateKeyData, 0, sizeof(privateKeyData));
-    xrp_compress_public_key(&tmpCtx.publicKeyContext.publicKey, privateKeyData,
+    csc_compress_public_key(&tmpCtx.publicKeyContext.publicKey, privateKeyData,
                             33);
-    addressLength = xrp_public_key_to_encoded_base58(
+    addressLength = csc_public_key_to_encoded_base58(
         privateKeyData, 33, tmpCtx.publicKeyContext.address,
         sizeof(tmpCtx.publicKeyContext.address), 0, 0);
     tmpCtx.publicKeyContext.address[addressLength] = '\0';
@@ -2073,9 +2073,9 @@ void handleSign(uint8_t p1, uint8_t p2, uint8_t *workBuffer,
     if (parseTx(workBuffer, dataLength, &txContent) != USTREAM_FINISHED) {
         THROW(0x6A80);
     }
-    xrp_print_amount(txContent.amount, fullAmount, sizeof(fullAmount));
-    xrp_print_amount(txContent.fees, maxFee, sizeof(fullAmount));
-    addressLength = xrp_public_key_to_encoded_base58(
+    csc_print_amount(txContent.amount, fullAmount, sizeof(fullAmount));
+    csc_print_amount(txContent.fees, maxFee, sizeof(fullAmount));
+    addressLength = csc_public_key_to_encoded_base58(
         txContent.destination, 20, tmpCtx.publicKeyContext.address,
         sizeof(tmpCtx.publicKeyContext.address), 0, 1);
     tmpCtx.publicKeyContext.address[addressLength] = '\0';

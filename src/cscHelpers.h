@@ -1,5 +1,5 @@
 /*******************************************************************************
-*   Ripple Wallet
+*   Casinocoin Wallet
 *   (c) 2017 Ledger
 *
 *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,25 +17,17 @@
 
 #include "os.h"
 #include "cx.h"
-#include <stdbool.h>
 
-#define MAX_BIP32_PATH 10
+unsigned short csc_public_key_to_encoded_base58(
+    unsigned char WIDE *in, unsigned short inlen, unsigned char *out,
+    unsigned short outlen, unsigned short version, unsigned char alreadyHashed);
 
-typedef enum parserStatus_e {
-    USTREAM_PROCESSING,
-    USTREAM_FINISHED,
-    USTREAM_FAULT
-} parserStatus_e;
+unsigned short csc_decode_base58_address(unsigned char WIDE *in,
+                                         unsigned short inlen,
+                                         unsigned char *out,
+                                         unsigned short outlen);
 
-typedef struct txContent_t {
-    uint64_t amount;
-    uint64_t fees;
-    uint8_t account[20];
-    uint8_t destination[20];
-    uint32_t sourceTag;
-    uint8_t sourceTagPresent;
-    uint32_t destinationTag;
-    uint8_t destinationTagPresent;
-} txContent_t;
+unsigned short csc_compress_public_key(cx_ecfp_public_key_t *publicKey,
+                                       uint8_t *out, uint32_t outlen);
 
-parserStatus_e parseTx(uint8_t *data, uint32_t length, txContent_t *context);
+unsigned short csc_print_amount(uint64_t amount, uint8_t *out, uint32_t outlen);

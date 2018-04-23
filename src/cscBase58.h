@@ -1,5 +1,5 @@
 /*******************************************************************************
-*   Ripple Wallet
+*   Casinocoin Wallet
 *   (c) 2017 Ledger
 *
 *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,8 @@
 #include "os.h"
 #include "cx.h"
 
-unsigned char xrp_decode_base58(unsigned char WIDE *in, unsigned char length,
+unsigned char csc_decode_base58(unsigned char WIDE *in, unsigned char length,
                                 unsigned char *out, unsigned char maxoutlen);
 
-unsigned char xrp_encode_base58(unsigned char WIDE *in, unsigned char length,
+unsigned char csc_encode_base58(unsigned char WIDE *in, unsigned char length,
                                 unsigned char *out, unsigned char maxoutlen);

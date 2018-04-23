@@ -1,5 +1,5 @@
 /*******************************************************************************
-*   Ripple Wallet
+*   Casinocoin Wallet
 *   (c) 2017 Ledger
 *
 *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +15,11 @@
 *  limitations under the License.
 ********************************************************************************/
 
-#include "xrpHelpers.h"
-#include "xrpBase58.h"
+#include "cscHelpers.h"
+#include "cscBase58.h"
 #include <stdbool.h>
 
-void xrp_public_key_hash160(unsigned char WIDE *in, unsigned short inlen,
+void csc_public_key_hash160(unsigned char WIDE *in, unsigned short inlen,
                             unsigned char *out) {
     union {
         cx_sha256_t shasha;
@@ -33,7 +33,7 @@ void xrp_public_key_hash160(unsigned char WIDE *in, unsigned short inlen,
     cx_hash(&u.riprip.header, CX_LAST, buffer, 32, out);
 }
 
-unsigned short xrp_public_key_to_encoded_base58(unsigned char WIDE *in,
+unsigned short csc_public_key_to_encoded_base58(unsigned char WIDE *in,
                                                 unsigned short inlen,
                                                 unsigned char *out,
                                                 unsigned short outlen,
@@ -52,7 +52,7 @@ unsigned short xrp_public_key_to_encoded_base58(unsigned char WIDE *in,
     }
 
     if (!alreadyHashed) {
-        xrp_public_key_hash160(in, inlen, tmpBuffer + versionSize);
+        csc_public_key_hash160(in, inlen, tmpBuffer + versionSize);
     } else {
         os_memmove(tmpBuffer + versionSize, in, 20);
     }
@@ -63,16 +63,16 @@ unsigned short xrp_public_key_to_encoded_base58(unsigned char WIDE *in,
     cx_hash(&hash.header, CX_LAST, checksumBuffer, 32, checksumBuffer);
 
     os_memmove(tmpBuffer + 20 + versionSize, checksumBuffer, 4);
-    return xrp_encode_base58(tmpBuffer, 24 + versionSize, out, outlen);
+    return csc_encode_base58(tmpBuffer, 24 + versionSize, out, outlen);
 }
 
-unsigned short xrp_decode_base58_address(unsigned char WIDE *in,
+unsigned short csc_decode_base58_address(unsigned char WIDE *in,
                                          unsigned short inlen,
                                          unsigned char *out,
                                          unsigned short outlen) {
     unsigned char hashBuffer[32];
     cx_sha256_t hash;
-    outlen = xrp_decode_base58(in, inlen, out, outlen);
+    outlen = csc_decode_base58(in, inlen, out, outlen);
 
     // Compute hash to verify address
     cx_sha256_init(&hash);
@@ -87,7 +87,7 @@ unsigned short xrp_decode_base58_address(unsigned char WIDE *in,
     return outlen;
 }
 
-unsigned short xrp_compress_public_key(cx_ecfp_public_key_t *publicKey,
+unsigned short csc_compress_public_key(cx_ecfp_public_key_t *publicKey,
                                        uint8_t *out, uint32_t outlen) {
     if (outlen < 33) {
         THROW(EXCEPTION_OVERFLOW);
@@ -110,7 +110,7 @@ unsigned short xrp_compress_public_key(cx_ecfp_public_key_t *publicKey,
 }
 
 #if 0
-unsigned short xrp_print_amount(uint64_t amount, uint8_t *out, uint32_t outlen) {
+unsigned short csc_print_amount(uint64_t amount, uint8_t *out, uint32_t outlen) {
     uint64_t partInt;
     uint64_t partDecimal;
     partInt = amount / 1000000;
@@ -194,7 +194,7 @@ bool adjustDecimals(char *src, uint32_t srcLength, char *target,
     return true;
 }
 
-unsigned short xrp_print_amount(uint64_t amount, uint8_t *out,
+unsigned short csc_print_amount(uint64_t amount, uint8_t *out,
                                 uint32_t outlen) {
     char tmp[20];
     char tmp2[25];
@@ -213,7 +213,7 @@ unsigned short xrp_print_amount(uint64_t amount, uint8_t *out,
         base /= 10;
     }
     tmp[i] = '\0';
-    strcpy(tmp2, "XRP ");
+    strcpy(tmp2, "CSC ");
     adjustDecimals(tmp, i, tmp2 + 4, 25, 6);
     if (strlen(tmp2) < outlen - 1) {
         strcpy(out, tmp2);

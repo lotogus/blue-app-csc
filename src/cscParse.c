@@ -1,5 +1,5 @@
 /*******************************************************************************
-*   Ripple Wallet
+*   Casinocoin Wallet
 *   (c) 2017 Ledger
 *
 *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +15,7 @@
 *  limitations under the License.
 ********************************************************************************/
 
-#include "xrpParse.h"
+#include "cscParse.h"
 
 #define STI_UINT16 0x01
 #define STI_UINT32 0x02
@@ -23,19 +23,19 @@
 #define STI_VL 0x07
 #define STI_ACCOUNT 0x08
 
-#define XRP_UINT16_TRANSACTION_TYPE 0x02
-#define XRP_UINT32_FLAGS 0x02
-#define XRP_UINT32_SOURCE_TAG 0x03
-#define XRP_UINT32_SEQUENCE 0x04
-#define XRP_UINT32_LAST_LEDGER_SEQUENCE 0x1B
-#define XRP_UINT32_DESTINATION_TAG 0x0E
-#define XRP_AMOUNT_AMOUNT 0x01
-#define XRP_AMOUNT_FEES 0x08
-#define XRP_VL_SIGNING_PUB_KEY 0x03
-#define XRP_ACCOUNT_ACCOUNT 0x01
-#define XRP_ACCOUNT_DESTINATION 0x03
+#define CSC_UINT16_TRANSACTION_TYPE 0x02
+#define CSC_UINT32_FLAGS 0x02
+#define CSC_UINT32_SOURCE_TAG 0x03
+#define CSC_UINT32_SEQUENCE 0x04
+#define CSC_UINT32_LAST_LEDGER_SEQUENCE 0x1B
+#define CSC_UINT32_DESTINATION_TAG 0x0E
+#define CSC_AMOUNT_AMOUNT 0x01
+#define CSC_AMOUNT_FEES 0x08
+#define CSC_VL_SIGNING_PUB_KEY 0x03
+#define CSC_ACCOUNT_ACCOUNT 0x01
+#define CSC_ACCOUNT_DESTINATION 0x03
 
-void parse_xrp_amount(uint64_t *value, uint8_t *data) {
+void parse_csc_amount(uint64_t *value, uint8_t *data) {
     *value = ((uint64_t)data[7]) | ((uint64_t)data[6] << 8) |
              ((uint64_t)data[5] << 16) | ((uint64_t)data[4] << 24) |
              ((uint64_t)data[3] << 32) | ((uint64_t)data[2] << 40) |
@@ -58,7 +58,7 @@ parserStatus_e processUint16(uint8_t *data, uint32_t length,
         goto error;
     }
     switch (fieldId) {
-    case XRP_UINT16_TRANSACTION_TYPE:
+    case CSC_UINT16_TRANSACTION_TYPE:
         if ((data[offset + 1] != 0x00) || (data[offset + 2] != 0x00)) {
             goto error;
         }
@@ -90,22 +90,22 @@ parserStatus_e processUint32(uint8_t *data, uint32_t length,
         }
         offset++;
         switch (fieldId2) {
-        case XRP_UINT32_LAST_LEDGER_SEQUENCE:
+        case CSC_UINT32_LAST_LEDGER_SEQUENCE:
             break;
         default:
             goto error;
         }
     }
 
-    case XRP_UINT32_FLAGS:
+    case CSC_UINT32_FLAGS:
         break;
-    case XRP_UINT32_SEQUENCE:
+    case CSC_UINT32_SEQUENCE:
         break;
-    case XRP_UINT32_SOURCE_TAG:
+    case CSC_UINT32_SOURCE_TAG:
         parse_uint32(&context->sourceTag, data + offset + 1);
         context->sourceTagPresent = 1;
         break;
-    case XRP_UINT32_DESTINATION_TAG:
+    case CSC_UINT32_DESTINATION_TAG:
         parse_uint32(&context->destinationTag, data + offset + 1);
         context->destinationTagPresent = 1;
         break;
@@ -128,11 +128,11 @@ parserStatus_e processAmount(uint8_t *data, uint32_t length,
         goto error;
     }
     switch (fieldId) {
-    case XRP_AMOUNT_AMOUNT:
-        parse_xrp_amount(&context->amount, data + offset + 1);
+    case CSC_AMOUNT_AMOUNT:
+        parse_csc_amount(&context->amount, data + offset + 1);
         break;
-    case XRP_AMOUNT_FEES:
-        parse_xrp_amount(&context->fees, data + offset + 1);
+    case CSC_AMOUNT_FEES:
+        parse_csc_amount(&context->fees, data + offset + 1);
         break;
     default:
         goto error;
@@ -159,7 +159,7 @@ parserStatus_e processVl(uint8_t *data, uint32_t length, txContent_t *context,
     }
     offset += 1 + 1;
     switch (fieldId) {
-    case XRP_VL_SIGNING_PUB_KEY:
+    case CSC_VL_SIGNING_PUB_KEY:
         if (dataLength != 33) {
             goto error;
         }
@@ -191,14 +191,14 @@ parserStatus_e processAccount(uint8_t *data, uint32_t length,
     }
     offset += 1 + 1;
     switch (fieldId) {
-    case XRP_ACCOUNT_ACCOUNT:
+    case CSC_ACCOUNT_ACCOUNT:
         if (dataLength != 20) {
             goto error;
         }
         os_memmove(context->account, data + offset, 20);
         break;
 
-    case XRP_ACCOUNT_DESTINATION:
+    case CSC_ACCOUNT_DESTINATION:
         if (dataLength != 20) {
             goto error;
         }
